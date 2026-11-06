@@ -38,13 +38,20 @@ Linked list tables have 15,013 buckets.
 |---|---|---|---:|---:|---:|---:|
 | 1 | Linked list + character sum (bad) | Title | 45,598 | 11,262 (75.0%) | 25 | ~15 ms |
 | 1 | | Quote | 56,718 | 12,290 (81.9%) | 22 | ~22 ms |
+| 2 | Linked list + polynomial (good) | Title | 12,118 | 7,063 (47.0%) | 10 | ~25 ms |
+| 2 | | Quote | 7,650 | 5,555 (37.0%) | 7 | ~40 ms |
 
 ## Screenshots
 
 ![Attempt 1](screenshots/attempt-1.png)
+![Attempt 2](screenshots/attempt-2.png)
 
 ## Reflection
 
 ### Attempt 1: linked list + character sum
 
 I started with a bad hash on purpose so I'd have something to compare against. Adding up the characters gives really small numbers (most titles land around 1,500), so most of the table never gets used. 75% of the title buckets and 82% of the quote buckets were empty, and the longest chain was 25. It was still fast though, since adding numbers is about as cheap as a hash gets.
+
+### Attempt 2: linked list + polynomial hash
+
+Same table, but the hash multiplies by 31 before adding each character, so where a letter is actually matters. This cut collisions by about 73% for titles and 87% for quotes. There are still around 40% empty buckets, but from what I read that's normal for chaining when you have about as many buckets as keys, even with a really good hash. Titles had more collisions than quotes because duplicate titles always end up in the same bucket no matter what. It was a little slower to build since there's more math per character.

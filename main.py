@@ -125,6 +125,10 @@ def run_attempt(num, titles, quotes):
         desc = "linked list + character sum hash (bad)"
         table1 = ChainingTable(chain_size, sum_hash)
         table2 = ChainingTable(chain_size, sum_hash)
+    elif num == 2:
+        desc = "linked list + polynomial hash (good)"
+        table1 = ChainingTable(chain_size, polynomial_hash)
+        table2 = ChainingTable(chain_size, polynomial_hash)
     else:
         print("no attempt", num)
         return
@@ -168,6 +172,7 @@ def main():
         run_attempt(which, titles, quotes)
     else:
         run_attempt(1, titles, quotes)
+        run_attempt(2, titles, quotes)
 
 
 main()
