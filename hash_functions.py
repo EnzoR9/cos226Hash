@@ -3,6 +3,7 @@
 # ones so i can still run the earlier attempts and compare them.
 
 # python ints never overflow, so the good hashes use this to stay at 32 bits
+# (same thing that happens automatically in java or c)
 MASK = 0xFFFFFFFF
 
 
@@ -29,4 +30,17 @@ def polynomial_hash(key):
     h = 0
     for ch in key:
         h = (31 * h + ord(ch)) & MASK
+    return h
+
+
+# ATTEMPT 3 - first 3 characters only (bad on purpose)
+# treats the first 3 characters like a base 128 number and ignores the rest.
+# different from the sum because order matters, but tons of keys start the
+# same way. the quotes only have 78 different starts (718 start with "Pro")
+# and 375 titles start with "The", so huge groups land on the same spot.
+# results: title 5,629,514 collisions, quote 5,960,729 collisions (yikes)
+def first_three_hash(key):
+    h = 0
+    for ch in key[:3]:
+        h = h * 128 + ord(ch)
     return h

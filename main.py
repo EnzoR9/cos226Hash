@@ -120,6 +120,7 @@ def build_and_print(label, table, movies, col):
 
 def run_attempt(num, titles, quotes):
     chain_size = next_prime(max(len(titles), len(quotes)))
+    probe_size = next_prime(int(max(len(titles), len(quotes)) / 0.75) + 1)
 
     if num == 1:
         desc = "linked list + character sum hash (bad)"
@@ -129,6 +130,10 @@ def run_attempt(num, titles, quotes):
         desc = "linked list + polynomial hash (good)"
         table1 = ChainingTable(chain_size, polynomial_hash)
         table2 = ChainingTable(chain_size, polynomial_hash)
+    elif num == 3:
+        desc = "linear probing + first 3 characters hash (bad)"
+        table1 = LinearProbingTable(probe_size, first_three_hash)
+        table2 = LinearProbingTable(probe_size, first_three_hash)
     else:
         print("no attempt", num)
         return
@@ -173,6 +178,7 @@ def main():
     else:
         run_attempt(1, titles, quotes)
         run_attempt(2, titles, quotes)
+        run_attempt(3, titles, quotes)
 
 
 main()

@@ -33,6 +33,7 @@ python main.py 2    # just attempt 2
 ## Results
 
 Linked list tables have 15,013 buckets.
+Linear probing tables have 20,011 slots (about 75% full).
 
 | # | Attempt | Table | Collisions | Wasted space | Longest chain/probe | Build time |
 |---|---|---|---:|---:|---:|---:|
@@ -40,11 +41,14 @@ Linked list tables have 15,013 buckets.
 | 1 | | Quote | 56,718 | 12,290 (81.9%) | 22 | ~22 ms |
 | 2 | Linked list + polynomial (good) | Title | 12,118 | 7,063 (47.0%) | 10 | ~25 ms |
 | 2 | | Quote | 7,650 | 5,555 (37.0%) | 7 | ~40 ms |
+| 3 | Linear probing + first 3 chars (bad) | Title | 5,629,514 | 5,011 (25.0%) | 7,042 | ~260 ms |
+| 3 | | Quote | 5,960,729 | 5,011 (25.0%) | 4,686 | ~270 ms |
 
 ## Screenshots
 
 ![Attempt 1](screenshots/attempt-1.png)
 ![Attempt 2](screenshots/attempt-2.png)
+![Attempt 3](screenshots/attempt-3.png)
 
 ## Reflection
 
@@ -55,3 +59,7 @@ I started with a bad hash on purpose so I'd have something to compare against. A
 ### Attempt 2: linked list + polynomial hash
 
 Same table, but the hash multiplies by 31 before adding each character, so where a letter is actually matters. This cut collisions by about 73% for titles and 87% for quotes. There are still around 40% empty buckets, but from what I read that's normal for chaining when you have about as many buckets as keys, even with a really good hash. Titles had more collisions than quotes because duplicate titles always end up in the same bucket no matter what. It was a little slower to build since there's more math per character.
+
+### Attempt 3: linear probing + first 3 characters
+
+I switched to linear probing and tried a different kind of bad hash that only looks at the first 3 letters. Wasted space dropped to 25% because I sized the table myself, but collisions went over 5.6 million. Hundreds of quotes start with the same few letters ("Pro", "Syn", etc.), so they all want the same spot, spill into the next ones, and form huge clusters. One insert had to step over 7,042 full slots. It was also about 10 times slower than everything else.
