@@ -37,24 +37,24 @@ Linear probing tables have 20,011 slots (about 75% full).
 
 | # | Attempt | Table | Collisions | Wasted space | Longest chain/probe | Build time |
 |---|---|---|---:|---:|---:|---:|
-| 1 | Linked list + character sum (bad) | Title | 45,598 | 11,262 (75.0%) | 25 | ~15 ms |
-| 1 | | Quote | 56,718 | 12,290 (81.9%) | 22 | ~22 ms |
-| 2 | Linked list + polynomial (good) | Title | 12,118 | 7,063 (47.0%) | 10 | ~25 ms |
-| 2 | | Quote | 7,650 | 5,555 (37.0%) | 7 | ~40 ms |
-| 3 | Linear probing + first 3 chars (bad) | Title | 5,629,514 | 5,011 (25.0%) | 7,042 | ~260 ms |
-| 3 | | Quote | 5,960,729 | 5,011 (25.0%) | 4,686 | ~270 ms |
-| 4 | Linear probing + FNV-1a (good) | Title | 38,096 | 5,011 (25.0%) | 93 | ~30 ms |
-| 4 | | Quote | 21,329 | 5,011 (25.0%) | 74 | ~40 ms |
-| 5 | Linked list + mixed FNV-1a + tail pointers | Title | 7,092 | 7,105 (47.3%) | 11 | ~35 ms |
-| 5 | | Quote | 5,567 | 5,580 (37.2%) | 7 | ~45 ms |
+| 1 | Linked list + character sum (bad) | Title | 45,598 | 11,262 (75.0%) | 25 | 16.12 ms |
+| 1 | | Quote | 56,718 | 12,290 (81.9%) | 22 | 24.17 ms |
+| 2 | Linked list + polynomial (good) | Title | 12,118 | 7,063 (47.0%) | 10 | 39.99 ms |
+| 2 | | Quote | 7,650 | 5,555 (37.0%) | 7 | 63.91 ms |
+| 3 | Linear probing + first 3 chars (bad) | Title | 5,629,514 | 5,011 (25.0%) | 7,042 | 238.54 ms |
+| 3 | | Quote | 5,960,729 | 5,011 (25.0%) | 4,686 | 247.1 ms |
+| 4 | Linear probing + FNV-1a (good) | Title | 38,096 | 5,011 (25.0%) | 93 | 35.07 ms |
+| 4 | | Quote | 21,329 | 5,011 (25.0%) | 74 | 56.82 ms |
+| 5 | Linked list + mixed FNV-1a + tail pointers | Title | 7,092 | 7,105 (47.3%) | 11 | 44.94 ms |
+| 5 | | Quote | 5,567 | 5,580 (37.2%) | 7 | 65.77 ms |
 
 ## Screenshots
 
-![Attempt 1](screenshots/attempt-1.png)
-![Attempt 2](screenshots/attempt-2.png)
-![Attempt 3](screenshots/attempt-3.png)
-![Attempt 4](screenshots/attempt-4.png)
-![Attempt 5](screenshots/attempt-5.png)
+![Attempt 1](screenshots/attempt1.png)
+![Attempt 2](screenshots/attempt2.png)
+![Attempt 3](screenshots/attempt3.png)
+![Attempt 4](screenshots/attempt4.png)
+![Attempt 5](screenshots/attempt5.png)
 
 ## Reflection
 
@@ -68,7 +68,7 @@ Same table, but the hash multiplies by 31 before adding each character, so where
 
 ### Attempt 3: linear probing + first 3 characters
 
-I switched to linear probing and tried a different kind of bad hash that only looks at the first 3 letters. Wasted space dropped to 25% because I sized the table myself, but collisions went over 5.6 million. Hundreds of quotes start with the same few letters ("Pro", "Syn", etc.), so they all want the same spot, spill into the next ones, and form huge clusters. One insert had to step over 7,042 full slots. It was also about 10 times slower than everything else.
+I switched to linear probing and tried a different kind of bad hash that only looks at the first 3 letters. Wasted space dropped to 25% because I sized the table myself, but collisions went over 5.6 million. Hundreds of quotes start with the same few letters ("Pro", "Syn", etc.), so they all want the same spot, spill into the next ones, and form huge clusters. One insert had to step over 7,042 full slots. It was also by far the slowest, about 240 ms per table when everything else was under 70 ms.
 
 ### Attempt 4: linear probing + FNV-1a
 

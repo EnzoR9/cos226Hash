@@ -10,9 +10,14 @@
 #
 # Each attempt is one table type + one hash function (see hash_functions.py):
 #   1 - linked list + character sum hash (bad)
+#   2 - linked list + polynomial hash (good)
+#   3 - linear probing + first 3 characters hash (bad)
+#   4 - linear probing + FNV-1a hash (good)
+#   5 - best one (linked list) + mixed FNV-1a hash + tail pointers
 #
 # Table sizes:
 #   linked list: first prime >= number of movies (15,013) so ~1 movie per bucket
+#   linear probing: first prime >= movies / 0.75 (20,011) so it ends ~75% full
 # I used primes because hash % size spreads keys out better with a prime size.
 #
 # Edge cases in the data: titles with commas are wrapped in quotes, one title
