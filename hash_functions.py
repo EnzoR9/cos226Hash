@@ -44,3 +44,17 @@ def first_three_hash(key):
     for ch in key[:3]:
         h = h * 128 + ord(ch)
     return h
+
+
+# ATTEMPT 4 - FNV-1a (good)
+# start at a big fixed number, then for each character XOR it in and multiply
+# by the FNV prime. different from the polynomial one because it XORs then
+# multiplies instead of multiplying then adding. it's a real hash people use
+# because it's fast and spreads out short similar strings well.
+# results: title 38,096 collisions, quote 21,329 collisions
+def fnv1a_hash(key):
+    h = 2166136261
+    for ch in key:
+        h = h ^ ord(ch)
+        h = (h * 16777619) & MASK
+    return h

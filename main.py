@@ -134,6 +134,10 @@ def run_attempt(num, titles, quotes):
         desc = "linear probing + first 3 characters hash (bad)"
         table1 = LinearProbingTable(probe_size, first_three_hash)
         table2 = LinearProbingTable(probe_size, first_three_hash)
+    elif num == 4:
+        desc = "linear probing + FNV-1a hash (good)"
+        table1 = LinearProbingTable(probe_size, fnv1a_hash)
+        table2 = LinearProbingTable(probe_size, fnv1a_hash)
     else:
         print("no attempt", num)
         return
@@ -179,6 +183,7 @@ def main():
         run_attempt(1, titles, quotes)
         run_attempt(2, titles, quotes)
         run_attempt(3, titles, quotes)
+        run_attempt(4, titles, quotes)
 
 
 main()

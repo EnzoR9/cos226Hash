@@ -43,12 +43,15 @@ Linear probing tables have 20,011 slots (about 75% full).
 | 2 | | Quote | 7,650 | 5,555 (37.0%) | 7 | ~40 ms |
 | 3 | Linear probing + first 3 chars (bad) | Title | 5,629,514 | 5,011 (25.0%) | 7,042 | ~260 ms |
 | 3 | | Quote | 5,960,729 | 5,011 (25.0%) | 4,686 | ~270 ms |
+| 4 | Linear probing + FNV-1a (good) | Title | 38,096 | 5,011 (25.0%) | 93 | ~30 ms |
+| 4 | | Quote | 21,329 | 5,011 (25.0%) | 74 | ~40 ms |
 
 ## Screenshots
 
 ![Attempt 1](screenshots/attempt-1.png)
 ![Attempt 2](screenshots/attempt-2.png)
 ![Attempt 3](screenshots/attempt-3.png)
+![Attempt 4](screenshots/attempt-4.png)
 
 ## Reflection
 
@@ -63,3 +66,7 @@ Same table, but the hash multiplies by 31 before adding each character, so where
 ### Attempt 3: linear probing + first 3 characters
 
 I switched to linear probing and tried a different kind of bad hash that only looks at the first 3 letters. Wasted space dropped to 25% because I sized the table myself, but collisions went over 5.6 million. Hundreds of quotes start with the same few letters ("Pro", "Syn", etc.), so they all want the same spot, spill into the next ones, and form huge clusters. One insert had to step over 7,042 full slots. It was also about 10 times slower than everything else.
+
+### Attempt 4: linear probing + FNV-1a
+
+Same table as attempt 3 with a good hash. Collisions dropped from millions to 38,096 for titles and 21,329 for quotes, and the build time went back to normal. It still had about 3 times more collisions than attempt 2, because with linear probing a taken spot pushes you into the next spot, and those small clusters add up. The upside is it only wastes 25% of the space.
