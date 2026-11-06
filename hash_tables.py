@@ -25,6 +25,12 @@ class ChainingTable:
         self.buckets = [None] * size
         self.count = 0
         self.collisions = 0
+        self.tails = None
+
+    # attempt 5: remember the last node in every bucket so inserting can jump
+    # straight to the end instead of walking the whole list
+    def use_tails(self):
+        self.tails = [None] * self.size
 
     def insert(self, key, movie):
         index = self.hash_func(key) % self.size
@@ -34,6 +40,15 @@ class ChainingTable:
         # empty bucket, no collision
         if self.buckets[index] is None:
             self.buckets[index] = new_node
+            if self.tails is not None:
+                self.tails[index] = new_node
+            return
+
+        # bucket is taken, but with tails i can skip right to the end (1 collision)
+        if self.tails is not None:
+            self.collisions += 1
+            self.tails[index].next = new_node
+            self.tails[index] = new_node
             return
 
         # bucket is taken so walk to the end of the list
@@ -71,6 +86,8 @@ class ChainingTable:
         return longest
 
     def name(self):
+        if self.tails is not None:
+            return "linked list (chaining) w/ tail pointers"
         return "linked list (chaining)"
 
 

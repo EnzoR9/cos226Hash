@@ -138,6 +138,12 @@ def run_attempt(num, titles, quotes):
         desc = "linear probing + FNV-1a hash (good)"
         table1 = LinearProbingTable(probe_size, fnv1a_hash)
         table2 = LinearProbingTable(probe_size, fnv1a_hash)
+    elif num == 5:
+        desc = "linked list + mixed FNV-1a hash + tail pointers"
+        table1 = ChainingTable(chain_size, fnv1a_mixed_hash)
+        table2 = ChainingTable(chain_size, fnv1a_mixed_hash)
+        table1.use_tails()
+        table2.use_tails()
     else:
         print("no attempt", num)
         return
@@ -184,6 +190,7 @@ def main():
         run_attempt(2, titles, quotes)
         run_attempt(3, titles, quotes)
         run_attempt(4, titles, quotes)
+        run_attempt(5, titles, quotes)
 
 
 main()

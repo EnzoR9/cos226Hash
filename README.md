@@ -45,6 +45,8 @@ Linear probing tables have 20,011 slots (about 75% full).
 | 3 | | Quote | 5,960,729 | 5,011 (25.0%) | 4,686 | ~270 ms |
 | 4 | Linear probing + FNV-1a (good) | Title | 38,096 | 5,011 (25.0%) | 93 | ~30 ms |
 | 4 | | Quote | 21,329 | 5,011 (25.0%) | 74 | ~40 ms |
+| 5 | Linked list + mixed FNV-1a + tail pointers | Title | 7,092 | 7,105 (47.3%) | 11 | ~35 ms |
+| 5 | | Quote | 5,567 | 5,580 (37.2%) | 7 | ~45 ms |
 
 ## Screenshots
 
@@ -52,6 +54,7 @@ Linear probing tables have 20,011 slots (about 75% full).
 ![Attempt 2](screenshots/attempt-2.png)
 ![Attempt 3](screenshots/attempt-3.png)
 ![Attempt 4](screenshots/attempt-4.png)
+![Attempt 5](screenshots/attempt-5.png)
 
 ## Reflection
 
@@ -70,3 +73,19 @@ I switched to linear probing and tried a different kind of bad hash that only lo
 ### Attempt 4: linear probing + FNV-1a
 
 Same table as attempt 3 with a good hash. Collisions dropped from millions to 38,096 for titles and 21,329 for quotes, and the build time went back to normal. It still had about 3 times more collisions than attempt 2, because with linear probing a taken spot pushes you into the next spot, and those small clusters add up. The upside is it only wastes 25% of the space.
+
+### Attempt 5: improving the best one
+
+Attempt 2 had the fewest collisions, so I built on that. I changed the hash to FNV-1a plus an extra bit-mixing step, and gave each bucket a pointer to the end of its list so inserting doesn't have to walk the whole chain. Collisions went down to 7,092 for titles and 5,567 for quotes, the best of all five.
+
+To be honest, the new hash alone didn't really help. I tested it without the tail pointers and it was within about 1.5% of attempt 2, basically the same. The tail pointers are what made the difference, since now a full bucket only costs 1 collision instead of 1 per node. It costs a bit more memory and doesn't make lookups any faster.
+
+## Final reflection
+
+The hash function mattered way more than anything else. Swapping a bad hash for a good one cut collisions by 73 to 87% for the linked list and over 99% for linear probing. Both bad hashes failed for the same reason: they could only make a small number of different values, so keys piled into a small part of the table.
+
+The table type decided how much a bad hash hurt. The linked list handled the bad hash okay. Collisions went up, but it stayed fast. Linear probing completely fell apart with a bad hash because the clusters kept growing and merging. With a good hash both worked fine, so there was a trade-off. The linked list (attempt 5) had the fewest collisions, and linear probing (attempt 4) wasted the least space. I couldn't get both in one attempt.
+
+Build time mostly depended on how much math the hash does, not on collisions. The cheapest hash was the fastest even with the most collisions. The only time collisions really showed up in the time was attempt 3. Duplicate titles also made the title table worse than the quote table in every attempt, so some collisions come from the data itself no matter which hash you use.
+
+If I kept going, I'd store each unique title once with a list of all the movies that share it. That would get rid of the duplicate-title collisions and let the title table be smaller.

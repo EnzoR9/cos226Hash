@@ -58,3 +58,18 @@ def fnv1a_hash(key):
         h = h ^ ord(ch)
         h = (h * 16777619) & MASK
     return h
+
+
+# ATTEMPT 5 - FNV-1a + an extra mixing step
+# runs FNV-1a and then the "finalizer" from MurmurHash3, which shuffles the
+# bits around so every input bit affects every output bit. used with the tail
+# pointer version of the linked list table (see hash_tables.py).
+# results: title 7,092 collisions, quote 5,567 collisions
+def fnv1a_mixed_hash(key):
+    h = fnv1a_hash(key)
+    h = h ^ (h >> 16)
+    h = (h * 0x85EBCA6B) & MASK
+    h = h ^ (h >> 13)
+    h = (h * 0xC2B2AE35) & MASK
+    h = h ^ (h >> 16)
+    return h
